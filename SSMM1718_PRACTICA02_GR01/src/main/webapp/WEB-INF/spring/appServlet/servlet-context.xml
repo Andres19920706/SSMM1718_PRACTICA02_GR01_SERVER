@@ -21,8 +21,28 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 	
-	<context:component-scan base-package="es.ujaen.ssmm1718_practica02_gr01_servidor" />
+	<!-- Conexión con la base de datos -->
+	<beans:bean id="dataSourceAnDomus" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<beans:property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+      	<beans:property name="url" value="jdbc:mysql://127.0.0.1:3306/andomus"/>
+      	<beans:property name="username" value="root"/>
+		<beans:property name="password" value=""/>
+	</beans:bean>
 	
+	<!--  -->
+	<beans:bean id="beanDaoU" class="es.ujaen.ssmm1718_practica02_gr01_usuarios.DaoUsuario">
+      <beans:property name="dataSource"  ref="dataSourceAnDomus" />  
+	</beans:bean>
+	
+	<!--  -->
+	<beans:bean id="beanDaoD" class="es.ujaen.ssmm1718.practica02_gr01_dispositivos.DaoDispositivos">
+      <beans:property name="dataSource"  ref="dataSourceAnDomus" />  
+	</beans:bean>
+	
+	
+	<context:component-scan base-package="es.ujaen.ssmm1718_practica02_gr01_servidor" />
+	<context:component-scan base-package="es.ujaen.ssmm1718_practica02_gr01_usuarios" />
+	<context:component-scan base-package="es.ujaen.ssmm1718_practica02_gr01_dispositivos" />
 	
 	
 </beans:beans>
