@@ -66,7 +66,6 @@ public class HomeController {
 		//Declaración de variables
 		String resultado; //Contiene la respuesta como resultado de ejecutar la petición.
 		
-		
 		//Extremos los datos y los procesamos
 		if(request.getParameter("usuario")==null ||  request.getParameter("clave")==null){
 			resultado = this.ERRCLIENTE[1];
@@ -98,7 +97,14 @@ public class HomeController {
 			        fecha.setTime(fecha.getTime()+EXPIREDMS); //Aumentamos una hora
 					
 			        //Genermoas la respuesta del servidor
-					resultado = "SESSION-ID="+session.getId()+"&EXPIERD="+fecha;
+			        if(daoUsser.nuevaSession(session.getId(), usuario,fecha)){
+			        	resultado = "SESSION-ID="+session.getId()+"&EXPIERD="+fecha;
+			        	
+			        }else{//Error al establcer conexión
+			        	resultado = this.ERRCLIENTE[1];
+			        	
+			        }
+					
 				}else{
 					resultado = this.ERRCLIENTE[0];	
 				}
@@ -139,8 +145,9 @@ public class HomeController {
 			try{
 				System.out.println("Sesion registrada: "+sesionID);
 				System.out.println("Session recibida: "+request.getParameter("sessionID"));
-				if(sesionID.equals(request.getParameter("sessionID"))){
-					System.out.println("entro");
+				//Comprobamos la sessión el servidor
+				if(daoUsser.comprobarSession(request.getParameter("sessionID"), request.getParameter("usuario"))){
+					System.out.println("EEEEEE, hay sesion");
 					ArrayList<DtoDispositivos> listaDispositivos = daoDispositivos.verDispositivo();
 					System.out.println("Lista: "+listaDispositivos.get(0).getId());
 					resultado = "lista=";
@@ -152,10 +159,11 @@ public class HomeController {
 							resultado=resultado+"&";
 						}
 					}
-					
 				}else{
-					resultado = "Sesion erronea";
+					System.out.println("No hay session");
+					resultado="Session erronea";
 				}
+
 			}catch(Exception e){
 				System.out.println("Excepcion: "+e);
 				resultado = "Error al conectar a la BBDD";
@@ -167,43 +175,38 @@ public class HomeController {
 		return VISTAS[0];
 	}
 	
-	//Camibar estado
-	@RequestMapping(value ={"/dispositivo"}, method = {RequestMethod.GET,RequestMethod.POST})
-	public String dispositivo (HttpServletRequest request, Model model) {
-		logger.info("Viendo los dispositivos");
-		//Declaración de variables
-		String resultado; //Contiene la respuesta como resultado de ejecutar la petición.
+	
+	//Camibar estado de los dispositivos
+		@RequestMapping(value ={"/estadoDispositivo"}, method = {RequestMethod.GET,RequestMethod.POST})
+		public String dispositivoEstado (HttpServletRequest request, Model model) {
+			logger.info("Cambio del estado de los dispositivos");
+			//Declaración de variables
+			String resultado; //Contiene la respuesta como resultado de ejecutar la petición.
 
-		//Extremos los datos y los procesamos
-		if(request.getParameter("usuario")==null ||  request.getParameter("sessionID")==null
-				|| request.getParameter("estado")==null || request.getParameter("localizacion")==null){
-			resultado = this.ERRCLIENTE[1];
-		}else{
-			
-			try{
-				
-				if(sesionID.equals(request.getParameter("sessionid"))){
-					Boolean resul =daoDispositivos.cambiarEstado(request.getParameter("localizacion"),
-							Boolean.parseBoolean(request.getParameter("estado")));
-					if(resul){
-						resultado = "ok";
-					}else{
-						resultado = "no ok";
-					}
-					
+			//Extremos los datos y los procesamos
+			if(request.getParameter("usuario")==null ||  request.getParameter("sessionID")==null
+					|| request.getParameter("estado")==null || request.getParameter("nameDispositivo")==null){
+				resultado = this.ERRCLIENTE[1];
+			}else{
+				//Comprobamos la session
+				//Comprobamos la sessión el servidor
+				if(daoUsser.comprobarSession(request.getParameter("sessionID"), request.getParameter("usuario"))){
+					System.out.println("EEEEEE, hay sesion");
+					String localizacion = request.getParameter("nameDispositivo");
+					boolean estado = Boolean.parseBoolean(request.getParameter("estado"));
+					resultado = daoDispositivos.cambiarEstado(localizacion, estado);
+						
 				}else{
-					resultado = "Sesion erronea";
+					System.out.println("No hay session");
+					resultado="Session erronea";
 				}
-			}catch(Exception e){
-				System.out.println("Excepcion: "+e);
-				resultado = "Error al conectar a la BBDD";
-			}
 			
+			}
+			System.out.println("E reulstado: "+resultado);
+			//Agregamos el resultado a la respuesta.
+			model.addAttribute("resultado",resultado);
+			return VISTAS[0];
 		}
-		//Agregamos el resultado a la respuesta.
-		model.addAttribute("resultado",resultado);
-		return VISTAS[0];
-	}
 	
 	
 }
