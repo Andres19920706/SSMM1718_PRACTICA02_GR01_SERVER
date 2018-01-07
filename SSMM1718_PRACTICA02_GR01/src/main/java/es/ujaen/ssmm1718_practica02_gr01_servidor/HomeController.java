@@ -194,8 +194,9 @@ public class HomeController {
 					System.out.println("EEEEEE, hay sesion");
 					String localizacion = request.getParameter("nameDispositivo");
 					boolean estado = Boolean.parseBoolean(request.getParameter("estado"));
+					
 					resultado = daoDispositivos.cambiarEstado(localizacion, estado);
-						
+					
 				}else{
 					System.out.println("No hay session");
 					resultado="Session erronea";
