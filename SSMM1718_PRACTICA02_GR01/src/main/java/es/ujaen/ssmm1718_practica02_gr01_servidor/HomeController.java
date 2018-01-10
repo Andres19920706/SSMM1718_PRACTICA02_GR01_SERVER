@@ -1,12 +1,12 @@
 package es.ujaen.ssmm1718_practica02_gr01_servidor;
 
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+//import java.text.DateFormat;
+//import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+//import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
+//import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -31,10 +31,10 @@ import es.ujaen.ssmm1718_practica02_gr01_usuarios.DtoUsuario;
 public class HomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
-	private static final String [] USER = {"Andres","123"};
-	private static String [] PUNTO1 = {"1","ON"};
-	private static String [] PUNTO2 = {"2","ON"};
-	private static String [] PUNTO3 = {"3","OFF"};
+//	private static final String [] USER = {"Andres","123"};
+//	private static String [] PUNTO1 = {"1","ON"};
+//	private static String [] PUNTO2 = {"2","ON"};
+//	private static String [] PUNTO3 = {"3","OFF"};
 	private static int EXPIREDMS = 3600000;
 	private String sesionID;
 	@Autowired
